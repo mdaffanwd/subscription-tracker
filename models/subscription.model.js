@@ -30,8 +30,8 @@ const subscriptionSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['active', 'canceled', 'expired'],
-      default: 'active'
+      required: true,
+      trim: true,
     },
     startDate: {
       type: Date,
