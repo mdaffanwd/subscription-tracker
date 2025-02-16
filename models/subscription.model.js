@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from "mongoose"
+import mongoose from 'mongoose';
 
 const subscriptionSchema = new mongoose.Schema({
   name: {
@@ -61,26 +61,29 @@ const subscriptionSchema = new mongoose.Schema({
     index: true,
   }
 }, { timestamps: true });
-// Auto-calculate renewal date if missing
-subscriptionSchema.pre("save", function (next) {
+
+
+// Auto-calculate renewal date if missing.
+subscriptionSchema.pre('save', function (next) {
   if (!this.renewalDate) {
     const renewalPeriods = {
       daily: 1,
       weekly: 7,
       monthly: 30,
-      yearly: 365
-    }
+      yearly: 365,
+    };
+
+    this.renewalDate = new Date(this.startDate);
+    this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency]);
   }
 
-  this.renewalDate = new Date(this.startDate)
-  this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency])
-
-  // auto-update the status if renewal date has passed
+  // Auto-update the status if renewal date has passed
   if (this.renewalDate < new Date()) {
-    this.status = 'expired'
+    this.status = 'expired';
   }
+
   next();
 });
 
-// Export the Subscription model
-export const Subscription = model("Subscription", subscriptionSchema);
+export const Subscription = mongoose.model('Subscription', subscriptionSchema);
+
