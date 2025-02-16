@@ -7,9 +7,11 @@ if (!DB_URI) {
   );
 }
 
+const DB_NAME = 'backendJSM'
+
 const connectToDatabase = async () => {
   try {
-    await mongoose.connect(DB_URI);
+    await mongoose.connect(`${DB_URI}/${DB_NAME}`);
   } catch (error) {
     console.log('Error connecting to DB', error);
     process.exit(1);
